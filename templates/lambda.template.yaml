@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Description: >
   (qs-1ph8nehap) 
   Serverless CICD Quick Start
@@ -47,41 +47,41 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: CfnStackAssumeRole
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - sts:AssumeRole
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - lambda:AddPermission
-                  - lambda:RemovePermission
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - events:PutRule
-                  - events:DeleteRule
-                  - events:PutTargets
-                  - events:RemoveTargets
-                Resource: "*"
+      - PolicyName: CfnStackAssumeRole
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - sts:AssumeRole
+            Resource: "*"
+          - Effect: Allow
+            Action:
+            - lambda:AddPermission
+            - lambda:RemovePermission
+            Resource:  "*"
+          - Effect: Allow
+            Action:
+            - events:PutRule
+            - events:DeleteRule
+            - events:PutTargets
+            - events:RemoveTargets
+            Resource:  "*"
 
   QuickStartStackMakerLambda:
     Type: AWS::Lambda::Function
@@ -201,31 +201,31 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: DynamicPipelineCleanup
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - sts:AssumeRole
-                Resource:
-                  - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${DevAwsAccountId}-dev
-                  - !Sub arn:aws:iam::${ProdAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${ProdAwsAccountId}-prod
+      - PolicyName: DynamicPipelineCleanup
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Resource:
+              - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${DevAwsAccountId}-dev
+              - !Sub arn:aws:iam::${ProdAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${ProdAwsAccountId}-prod
 
   DynamicPipelineCleanupLambda:
     Type: AWS::Lambda::Function
@@ -330,62 +330,62 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: DynamicPipelineCleanup
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - cloudformation:CreateStack
-                  - cloudformation:DescribeStacks
-                  - cloudformation:DeleteStack
-                Resource: !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}-ProjectPipelineStack-branch-*/*
-              - Effect: Allow
-                Action:
-                  - codebuild:CreateProject
-                  - codebuild:DeleteProject
-                Resource:
-                  - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/DeployDevProject-*
-                  - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/SmokeTestDevProject-*
-                  - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/BuildProject-*
-              - Effect: Allow
-                Action:
-                  - iam:PassRole
-                Resource:
-                  - !Ref PipelineServiceRoleArn
-                  - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineDeploymentRole-${AWS::Region}-${DevAwsAccountId}-dev
-                  - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${DevAwsAccountId}-dev
-              - Effect: Allow
-                Action:
-                  - codepipeline:CreatePipeline
-                  - codepipeline:GetPipeline
-                  - codepipeline:GetPipelineState
-                  - codepipeline:DeletePipeline
-                Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}-ProjectPipelineStack-branch-*
-              - Effect: Allow
-                Action:
-                  - lambda:InvokeFunction
-                Resource: !GetAtt DynamicPipelineCleanupLambda.Arn
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                Resource:
-                  - !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
+      - PolicyName: DynamicPipelineCleanup
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - cloudformation:CreateStack
+              - cloudformation:DescribeStacks
+              - cloudformation:DeleteStack
+            Resource: !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}-ProjectPipelineStack-branch-*/*
+          - Effect: Allow
+            Action:
+              - codebuild:CreateProject
+              - codebuild:DeleteProject
+            Resource:
+              - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/DeployDevProject-*
+              - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/SmokeTestDevProject-*
+              - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/BuildProject-*
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !Ref PipelineServiceRoleArn
+              - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineDeploymentRole-${AWS::Region}-${DevAwsAccountId}-dev
+              - !Sub arn:aws:iam::${DevAwsAccountId}:role/CodePipelineServiceRole-${AWS::Region}-${DevAwsAccountId}-dev
+          - Effect: Allow
+            Action:
+              - codepipeline:CreatePipeline
+              - codepipeline:GetPipeline
+              - codepipeline:GetPipelineState
+              - codepipeline:DeletePipeline
+            Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AWS::StackName}-ProjectPipelineStack-branch-*
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt DynamicPipelineCleanupLambda.Arn
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
 
   DynamicPipelineMakerLambda:
     Type: AWS::Lambda::Function
@@ -492,33 +492,33 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: CleanUpBucketsLambda
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - s3:*
-                Resource:
-                  - !Sub arn:aws:s3:::${ArtifactBucket}
-                  - !Sub arn:aws:s3:::${ArtifactBucket}/*
-                  - !Sub arn:aws:s3:::${SamTranslationBucket}
-                  - !Sub arn:aws:s3:::${SamTranslationBucket}/*
+      - PolicyName: CleanUpBucketsLambda
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub arn:aws:s3:::${ArtifactBucket}
+              - !Sub arn:aws:s3:::${ArtifactBucket}/*
+              - !Sub arn:aws:s3:::${SamTranslationBucket}
+              - !Sub arn:aws:s3:::${SamTranslationBucket}/*
 
   CleanUpBucketsLambda:
     Type: AWS::Lambda::Function
@@ -550,30 +550,30 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: CodecommitCredentialsLambda
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - iam:*
-                Resource:
-                  - !Sub arn:aws:iam::${AWS::AccountId}:user/AWS-CICD-Quickstart-${AppName}-${AWS::Region}-${AWS::AccountId}
+      - PolicyName: CodecommitCredentialsLambda
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - iam:*
+            Resource:
+              - !Sub arn:aws:iam::${AWS::AccountId}:user/AWS-CICD-Quickstart-${AppName}-${AWS::Region}-${AWS::AccountId}
 
   CodecommitCredentialsLambda:
     Type: AWS::Lambda::Function
